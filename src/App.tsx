@@ -89,9 +89,9 @@ const Navbar = () => {
               {link.name}
             </a>
           ))}
-          <button className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-lg shadow-primary/20">
+          <a target="_blank" href="https://fauziproject.myscalev.com/p/drone-underwater-nhwq" className="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-lg shadow-primary/20">
             Order Now
-          </button>
+          </a>
         </div>
 
         {/* Mobile Toggle */}
