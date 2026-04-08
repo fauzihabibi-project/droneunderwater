@@ -1,13 +1,502 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaESP - Underwater Drone Solutions</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS (via Tailwind CSS CDN for Vanilla project) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            primary: '#0ea5e9',
+            secondary: '#6366f1',
+            accent: '#22d3ee',
+          }
+        }
+      }
+    }
+  </script>
 
+  <!-- Tailwind base utility adjustments for @apply directives that were in index.css -->
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply bg-slate-950 text-slate-200 font-sans antialiased selection:bg-primary/30;
+      }
+    }
+
+    @layer components {
+      .glass {
+        @apply bg-white/5 border border-white/10;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary;
+      }
+    }
+  </style>
+
+  <!-- AOS css for scroll animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 bg-transparent">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+          <i data-lucide="waves" class="text-white w-6 h-6"></i>
+        </div>
+        <span class="text-2xl font-display font-bold tracking-tight text-white">Aqua<span class="text-primary">ESP</span></span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#features" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Features</a>
+        <a href="#tech" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Technology</a>
+        <a href="#gallery" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Gallery</a>
+        <a href="#contact" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Contact</a>
+        <a target="_blank" href="https://fauziproject.myscalev.com/p/drone-underwater-nhwq" class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-lg shadow-primary/20">
+          Order Now
+        </a>
+      </div>
+
+      <!-- Mobile Toggle -->
+      <button id="mobile-menu-btn" class="md:hidden text-white cursor-pointer ml-auto z-50 pt-2">
+        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+        <i data-lucide="x" id="close-icon" class="hidden w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="absolute top-full left-0 right-0 bg-slate-900 border-b border-white/10 p-6 md:hidden hidden opacity-0 transition-opacity duration-300 transform -translate-y-4">
+      <div class="flex flex-col gap-4">
+        <a href="#features" class="mobile-link text-lg font-medium text-slate-300">Features</a>
+        <a href="#tech" class="mobile-link text-lg font-medium text-slate-300">Technology</a>
+        <a href="#gallery" class="mobile-link text-lg font-medium text-slate-300">Gallery</a>
+        <a href="#contact" class="mobile-link text-lg font-medium text-slate-300">Contact</a>
+        <button class="bg-primary text-white px-5 py-3 rounded-xl text-center font-semibold mt-2">
+          Order Now
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none">
+        <div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/20 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div data-aos="fade-right" data-aos-duration="1000" data-aos-easing="ease-out">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Powered by ESP32 Technology
+          </div>
+          <h1 class="text-5xl md:text-7xl font-display font-bold text-white leading-tight mb-6">
+            Real-Time <span class="text-gradient">Water Quality</span> Monitoring
+          </h1>
+          <p class="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed">
+            Advanced ESP32-powered underwater drones equipped with industrial-grade 
+            pH, Turbidity, and Temperature sensors. Monitor aquatic environments 
+            instantly through our integrated real-time dashboard.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button class="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 transition-all group shadow-xl shadow-primary/20">
+              Get Started <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+            <button class="glass hover:bg-white/10 text-white px-8 py-4 rounded-2xl font-bold transition-all">
+              View Demo
+            </button>
+          </div>
+          
+          <div class="mt-12 flex items-center gap-8">
+            <div>
+              <div class="text-3xl font-bold text-white">4K</div>
+              <div class="text-sm text-slate-500">Video Quality</div>
+            </div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div>
+              <div class="text-3xl font-bold text-white">100m</div>
+              <div class="text-sm text-slate-500">Max Depth</div>
+            </div>
+            <div class="w-px h-10 bg-white/10"></div>
+            <div>
+              <div class="text-3xl font-bold text-white">2.4G</div>
+              <div class="text-sm text-slate-500">Wireless Control</div>
+            </div>
+          </div>
+        </div>
+
+        <div data-aos="zoom-in-up" data-aos-duration="1000" data-aos-easing="ease-out" class="relative">
+          <div class="relative z-10 rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border border-white/5">
+            <img 
+              src="img/drone.jpg" 
+              alt="Underwater Drone" 
+              class="w-full h-auto object-cover"
+              referrerpolicy="no-referrer"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          </div>
+          
+          <!-- Floating Stats Card -->
+          <div class="absolute -bottom-6 -left-6 glass p-4 rounded-2xl z-20 hidden lg:block animate-float">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                <i data-lucide="shield" class="text-green-500 w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-white">System Status</div>
+                <div class="text-xs text-green-500 font-medium">All Systems Operational</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-slate-900/50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+          <h2 class="text-sm font-bold text-primary uppercase tracking-widest mb-4">Core Capabilities</h2>
+          <p class="text-4xl md:text-5xl font-display font-bold text-white">Advanced Underwater Tech</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div data-aos="fade-up" data-aos-delay="0" class="glass p-8 rounded-3xl hover:bg-white/10 transition-all group">
+            <div class="mb-6 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="activity" class="w-8 h-8 text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Precision pH Sensor</h3>
+            <p class="text-slate-400 leading-relaxed">Laboratory-grade pH monitoring with automatic temperature compensation for accurate acidity readings.</p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div data-aos="fade-up" data-aos-delay="100" class="glass p-8 rounded-3xl hover:bg-white/10 transition-all group">
+            <div class="mb-6 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="droplets" class="w-8 h-8 text-accent"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Turbidity Analysis</h3>
+            <p class="text-slate-400 leading-relaxed">Optical sensors to measure water clarity and suspended solids in real-time, perfect for pollution tracking.</p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div data-aos="fade-up" data-aos-delay="200" class="glass p-8 rounded-3xl hover:bg-white/10 transition-all group">
+            <div class="mb-6 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="thermometer" class="w-8 h-8 text-secondary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Thermal Mapping</h3>
+            <p class="text-slate-400 leading-relaxed">High-accuracy temperature sensors to detect thermal stratification and environmental changes.</p>
+          </div>
+
+          <!-- Feature 4 -->
+          <div data-aos="fade-up" data-aos-delay="300" class="glass p-8 rounded-3xl hover:bg-white/10 transition-all group">
+            <div class="mb-6 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="bar-chart-3" class="w-8 h-8 text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Live Dashboard</h3>
+            <p class="text-slate-400 leading-relaxed">Instant data visualization via WiFi/Bluetooth, allowing you to track trends as the drone explores.</p>
+          </div>
+
+          <!-- Feature 5 -->
+          <div data-aos="fade-up" data-aos-delay="400" class="glass p-8 rounded-3xl hover:bg-white/10 transition-all group">
+            <div class="mb-6 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="cpu" class="w-8 h-8 text-accent"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">ESP32 Processing</h3>
+            <p class="text-slate-400 leading-relaxed">Efficient data collection and transmission using the powerful dual-core ESP32 microcontroller.</p>
+          </div>
+
+          <!-- Feature 6 -->
+          <div data-aos="fade-up" data-aos-delay="500" class="glass p-8 rounded-3xl hover:bg-white/10 transition-all group">
+            <div class="mb-6 p-3 bg-white/5 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
+              <i data-lucide="zap" class="w-8 h-8 text-secondary"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">Instant Alerts</h3>
+            <p class="text-slate-400 leading-relaxed">Configurable threshold alerts that notify you immediately when water parameters go out of range.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section id="tech" class="py-24 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+          <div data-aos="fade-right">
+            <h2 class="text-4xl font-display font-bold text-white mb-6">
+              Integrated <span class="text-primary">Real-Time</span> Dashboard
+            </h2>
+            <p class="text-lg text-slate-400 mb-8">
+              Our ESP32-based system doesn't just collect data—it visualizes it. 
+              The drone transmits sensor readings every 100ms, providing a 
+              seamless monitoring experience for environmental research.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div class="p-4 glass rounded-2xl">
+                <div class="flex items-center gap-2 mb-2">
+                  <i data-lucide="activity" class="text-primary w-4 h-4"></i>
+                  <span class="text-xs font-bold text-slate-400 uppercase">pH Level</span>
+                </div>
+                <div class="text-2xl font-bold text-white">7.24</div>
+                <div class="text-[10px] text-green-500 font-medium mt-1">Neutral / Stable</div>
+              </div>
+              <div class="p-4 glass rounded-2xl">
+                <div class="flex items-center gap-2 mb-2">
+                  <i data-lucide="droplets" class="text-accent w-4 h-4"></i>
+                  <span class="text-xs font-bold text-slate-400 uppercase">Turbidity</span>
+                </div>
+                <div class="text-2xl font-bold text-white">14.2 <span class="text-sm font-normal text-slate-500">NTU</span></div>
+                <div class="text-[10px] text-yellow-500 font-medium mt-1">Moderate Clarity</div>
+              </div>
+              <div class="p-4 glass rounded-2xl">
+                <div class="flex items-center gap-2 mb-2">
+                  <i data-lucide="thermometer" class="text-secondary w-4 h-4"></i>
+                  <span class="text-xs font-bold text-slate-400 uppercase">Temp</span>
+                </div>
+                <div class="text-2xl font-bold text-white">24.8°C</div>
+                <div class="text-[10px] text-blue-500 font-medium mt-1">Optimal Range</div>
+              </div>
+            </div>
+
+            <ul class="space-y-4">
+              <li class="flex items-center gap-3 text-slate-300">
+                <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <i data-lucide="chevron-right" class="text-primary w-3 h-3"></i>
+                </div>
+                Real-time sensor fusion via ESP32
+              </li>
+              <li class="flex items-center gap-3 text-slate-300">
+                <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <i data-lucide="chevron-right" class="text-primary w-3 h-3"></i>
+                </div>
+                WebSocket-based low latency data streaming
+              </li>
+              <li class="flex items-center gap-3 text-slate-300">
+                <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <i data-lucide="chevron-right" class="text-primary w-3 h-3"></i>
+                </div>
+                Historical data logging and CSV export
+              </li>
+              <li class="flex items-center gap-3 text-slate-300">
+                <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <i data-lucide="chevron-right" class="text-primary w-3 h-3"></i>
+                </div>
+                Customizable alert thresholds
+              </li>
+              <li class="flex items-center gap-3 text-slate-300">
+                <div class="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <i data-lucide="chevron-right" class="text-primary w-3 h-3"></i>
+                </div>
+                Multi-device dashboard access
+              </li>
+            </ul>
+          </div>
+
+          <div data-aos="zoom-in" class="relative">
+            <div class="glass p-6 rounded-[2.5rem] relative z-10">
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                  <i data-lucide="gauge" class="text-primary w-5 h-5"></i>
+                  <span class="font-bold text-white">Live Telemetry</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Recording</span>
+                </div>
+              </div>
+              
+              <div class="h-[300px] w-full relative">
+                <!-- Data chart canvas -->
+                <canvas id="sensorChart"></canvas>
+              </div>
+
+              <div class="mt-6 p-4 bg-white/5 rounded-2xl border border-white/5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center">
+                      <i data-lucide="radio" class="text-primary w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <div class="text-[10px] text-slate-500 uppercase font-bold">Connection</div>
+                      <div class="text-sm font-bold text-white">ESP32_DRONE_01</div>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-[10px] text-slate-500 uppercase font-bold">Latency</div>
+                    <div class="text-sm font-bold text-green-500">12ms</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Decorative circles -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 bg-slate-900/50">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-sm font-bold text-primary uppercase tracking-widest mb-4">Gallery</h2>
+          <p class="text-4xl font-display font-bold text-white">Captured by AquaESP</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div data-aos="zoom-in" data-aos-delay="0" class="aspect-square rounded-3xl overflow-hidden border border-white/10 hover:scale-[1.02] transition-transform duration-300">
+            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=600" alt="Gallery Image 1" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+          </div>
+          <div data-aos="zoom-in" data-aos-delay="100" class="aspect-square rounded-3xl overflow-hidden border border-white/10 hover:scale-[1.02] transition-transform duration-300">
+            <img src="https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?auto=format&fit=crop&q=80&w=600" alt="Gallery Image 2" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+          </div>
+          <div data-aos="zoom-in" data-aos-delay="200" class="aspect-square rounded-3xl overflow-hidden border border-white/10 hover:scale-[1.02] transition-transform duration-300">
+            <img src="https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&q=80&w=600" alt="Gallery Image 3" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+          </div>
+          <div data-aos="zoom-in" data-aos-delay="300" class="aspect-square rounded-3xl overflow-hidden border border-white/10 hover:scale-[1.02] transition-transform duration-300">
+            <img src="https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&q=80&w=600" alt="Gallery Image 4" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="glass p-12 rounded-[3rem] relative overflow-hidden" data-aos="fade-up">
+          <div class="absolute top-0 right-0 w-1/2 h-full bg-primary/5 -skew-x-12 translate-x-1/4 pointer-events-none"></div>
+          
+          <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 class="text-4xl font-display font-bold text-white mb-6">Ready to Dive In?</h2>
+              <p class="text-lg text-slate-400 mb-8">
+                Whether you're a researcher, hobbyist, or professional, we have 
+                the right underwater drone solution for you. Contact us for 
+                custom builds and pricing.
+              </p>
+              
+              <div class="space-y-4">
+                <div class="flex items-center gap-4 text-slate-300">
+                  <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center shrink-0">
+                    <i data-lucide="zap" class="text-primary w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500">Email us at</div>
+                    <div class="font-bold">habibi.muhammad.fauzi@gmail.com</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 text-slate-300">
+                  <div class="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center shrink-0">
+                    <i data-lucide="waves" class="text-accent w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm text-slate-500">Call us</div>
+                    <div class="font-bold">+62 812 3456 7890</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <form class="space-y-4">
+              <div class="grid md:grid-cols-2 gap-4">
+                <input 
+                  type="text" 
+                  placeholder="Your Name" 
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary transition-colors"
+                />
+                <input 
+                  type="email" 
+                  placeholder="Your Email" 
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary transition-colors"
+                />
+              </div>
+              <textarea 
+                placeholder="Your Message" 
+                rows="4"
+                class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary transition-colors"
+              ></textarea>
+              <button type="button" class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-primary/20">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-12 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <i data-lucide="waves" class="text-white w-5 h-5"></i>
+          </div>
+          <span class="text-xl font-display font-bold text-white">Aqua<span class="text-primary">ESP</span></span>
+        </div>
+        
+        <div class="flex gap-8 text-sm text-slate-500">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+          <a href="#" class="hover:text-white transition-colors">Documentation</a>
+        </div>
+
+        <div class="flex gap-4">
+          <a href="https://www.instagram.com/fauzihabibi_" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all">
+            <i data-lucide="instagram" class="w-4 h-4 text-slate-400"></i>
+          </a>
+          <a href="https://github.com/muhammadfauzihabibi" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all">
+            <i data-lucide="github" class="w-4 h-4 text-slate-400"></i>
+          </a>
+        </div>
+      </div>
+      <div class="mt-8 text-center text-sm text-slate-600" id="copyright-year">
+        <!-- Year is set dynamically with JS -->
+        © <span id="year"></span> AquaESP. All rights reserved. Built with ESP32.
+      </div>
+    </div>
+  </footer>
+
+  <!-- AOS Animation Script Setup -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+  <!-- Custom JavaScript -->
+  <script src="js/script.js"></script>
+</body>
+</html>

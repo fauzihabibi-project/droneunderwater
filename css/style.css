@@ -1,0 +1,17 @@
+/* Base CSS properties and floating animation */
+
+/* Custom animation for the floating shield card in the hero section */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Ensure smooth scrolling for anchoring links */
+html {
+  scroll-behavior: smooth;
+}
